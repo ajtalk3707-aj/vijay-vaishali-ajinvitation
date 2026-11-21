@@ -158,6 +158,7 @@ export default function Site() {
   const { t, lang } = useLang()
   const [copied, setCopied] = useState(false)
   const mapUrl = `${CFG.mapQuery}`
+  const mapUrl1 = `${CFG.mapQuery1}`
   const extra = CFG.photos.slice(1)
   const share = async () => {
     const data = { title: t.share.text, text: t.share.text, url: location.href }
@@ -243,7 +244,7 @@ export default function Site() {
             <Reveal><Compass /></Reveal>
             <Reveal as="h3" className="vname">{t.venue2.name}</Reveal>
             <Reveal className="vlines">{t.venue2.lines.map((l) => <p key={l}>{l}</p>)}</Reveal>
-            <Reveal><motion.a className="btn sun" href={mapUrl} target="_blank" rel="noopener noreferrer" whileTap={{ scale: 0.96 }}>📍 {t.venue2.btnMap}</motion.a></Reveal>
+            <Reveal><motion.a className="btn sun" href={mapUrl1} target="_blank" rel="noopener noreferrer" whileTap={{ scale: 0.96 }}>📍 {t.venue2.btnMap}</motion.a></Reveal>
           </div>
         </section>
 

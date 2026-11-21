@@ -8,6 +8,7 @@ export const CFG = {
   // Wedding moment used by the countdown (India time). UPDATE if your date changes.
   weddingISO: '2027-02-02T17:15:00+05:30',
   mapQuery: 'https://goo.gl/maps/248kEm1PeSDG4Gjm7?g_st=aw',
+  mapQuery1: 'https://maps.app.goo.gl/Qw1Kf3jrnaUHDFqx8',
   // The main couple photo and music are loaded from src/assests.
   photos: [couplePhoto],
   musicUrl: weddingMusic,
