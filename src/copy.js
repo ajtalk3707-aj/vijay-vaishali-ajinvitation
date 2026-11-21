@@ -1,4 +1,9 @@
 import couplePhoto from './assests/vijay-vaishali.png'
+import coupleMemory0 from './assests/couple0.jpeg'
+import coupleMemory1 from './assests/couple1.jpeg'
+import coupleMemory2 from './assests/couple2.jpeg'
+import coupleMemory3 from './assests/couple3.jpeg'
+import coupleMemory4 from './assests/couple4.jpeg'
 import weddingMusic from './assests/aaj-sajya.mpeg'
 
 // ✏️ EDIT HERE — settings + every word of the invitation, in Gujarati (gu) and English (en).
@@ -10,7 +15,7 @@ export const CFG = {
   mapQuery: 'https://goo.gl/maps/248kEm1PeSDG4Gjm7?g_st=aw',
   mapQuery1: 'https://maps.app.goo.gl/Qw1Kf3jrnaUHDFqx8',
   // The main couple photo and music are loaded from src/assests.
-  photos: [couplePhoto],
+  photos: [couplePhoto, coupleMemory0, coupleMemory1, coupleMemory2, coupleMemory3, coupleMemory4],
   musicUrl: weddingMusic,
 }
 
@@ -54,8 +59,8 @@ export const COPY = {
       ],
     },
     kalrav: { title: 'મધુર કલરવ', msg: 'લગ્નના શુભ પ્રસંગે પ્રેમ અને સ્નેહની લાગણીઓ સાથે આપ સૌની હાજરી અમારા માટે આશીર્વાદ સમાન છે. પધારશો જ, એવી અપેક્ષા સહ.', sender: '– સાદર, સૌ સ્નેહીજનો' },
-    venue: { title: 'શુભ સ્થળ', name: 'ત્રંબોડા', lines: ['તા. ચોટીલા', 'સુરેન્દ્રનગર.'], btnMap: 'ગૂગલ મેપ પર લોકેશન જુઓ' },
-    venue2: { title: 'લગ્ન સ્થળ', name: 'મોકાસર', lines: ['તા. ચોટીલા', 'સુરેન્દ્રનગર.'], btnMap: 'ગૂગલ મેપ પર લોકેશન જુઓ' },
+    venue: { title: 'શુભ સ્થળ', name: 'ત્રંબોડા', list: 'શ્રી દલસુખભાઈ મોહનભાઈ ઓળકિયા', lines: ['તા. ચોટીલા', 'સુરેન્દ્રનગર.'], btnMap: 'ગૂગલ મેપ પર લોકેશન જુઓ' },
+    venue2: { title: 'લગ્ન સ્થળ', name: 'મોકાસર', list:'શ્રી દલસુખભાઈ રણછોડભાઈ રાજપરા', lines: ['તા. ચોટીલા', 'સુરેન્દ્રનગર.'], btnMap: 'ગૂગલ મેપ પર લોકેશન જુઓ' },
     family: {
       title: 'પરિવારજનો',
       cards: [
@@ -70,18 +75,18 @@ export const COPY = {
     rsvp: {
       title: 'આપની રાહ જોઈએ છીએ', sub: 'આપની હાજરી જ અમારા માટે સૌથી મોટી ભેટ છે.',
       wa: 'વોટ્સએપ પર શુભેચ્છા પાઠવો (RSVP)', call: 'સંપર્ક',
-      msg: 'નમસ્તે, ચિ. કિશન સંગ ચિ. પુરન ના શુભ લગ્ન પ્રસંગે હાર્દિક શુભેચ્છાઓ!',
+      msg: 'નમસ્તે, ચિ. વિજય સંગ ચિ. વૈશાલી ના શુભ લગ્ન પ્રસંગે હાર્દિક શુભેચ્છાઓ!',
     },
     nav: ['હોમ', 'આમંત્રણ', 'કાર્યક્રમ', 'સ્થળ', 'RSVP'],
     ch: ['૧', '૨', '૩', '૪', '૫'],
-    cal: { btn: 'કેલેન્ડરમાં ઉમેરો', title: 'ચિ. કિશન સંગ ચિ. પુરન – શુભ લગ્ન' },
+    cal: { btn: 'કેલેન્ડરમાં ઉમેરો', title: 'ચિ. વિજય સંગ ચિ. વૈશાલી – શુભ લગ્ન' },
     form: {
       name: 'આપનું નામ', guests: 'મહેમાનોની સંખ્યા', attend: ['જરૂર પધારીશું', 'કદાચ', 'પધારી શકીશું નહીં'],
       note: 'શુભેચ્છા સંદેશ (વૈકલ્પિક)', send: 'વોટ્સએપ પર RSVP મોકલો', need: 'કૃપા કરીને આપનું નામ લખો',
       compose: (n, g, a, m) => `નમસ્તે, હું ${n}. ${a}. મહેમાનોની સંખ્યા: ${g}.${m ? ' ' + m : ''}`,
     },
     gallery: { title: 'સુંદર ક્ષણો', cap: ['પ્રેમની શરૂઆત', 'સાથે હંમેશા', 'શુભ સંગમ', 'આપણી વાર્તા', 'ખુશીની પળો', 'નવી સફર'] },
-    share: { btn: 'આમંત્રણ શેર કરો', text: 'ચિ. કિશન સંગ ચિ. પુરન ના શુભ વિવાહની કંકોતરી', copied: 'લિંક કૉપી થઈ ✓' },
+    share: { btn: 'આમંત્રણ શેર કરો', text: 'ચિ. વિજય સંગ ચિ. વૈશાલી ના શુભ વિવાહની કંકોતરી', copied: 'લિંક કૉપી થઈ ✓' },
     footer: 'પ્રેમ અને આશીર્વાદ સહ',
   },
 
@@ -119,8 +124,8 @@ export const COPY = {
       ],
     },
     kalrav: { title: 'Sweet Words', msg: 'On this auspicious occasion, your presence — filled with love and affection — is a blessing to us. We eagerly await you.', sender: '– With warm regards, all our loved ones' },
-    venue: { title: 'The Venue', name: 'Tramboda', lines: ['Ta. Chotila', 'Surendranagar.'], btnMap: 'View location on Google Maps' },
-    venue2: { title: 'The Wedding Venue', name: 'Mokasar', lines: ['Ta. Chotila', 'Surendranagar.'], btnMap: 'View location on Google Maps' },
+    venue: { title: 'The Venue', name: 'Tramboda', list: 'Mr. Dalsukhbhai Mohanbhai Olakiya', lines: ['Ta. Chotila', 'Surendranagar.'], btnMap: 'View location on Google Maps' },
+    venue2: { title: 'The Wedding Venue', name: 'Mokasar', list: 'Mr. Dalsukhbhai Ranchhodbhai Rajpara', lines: ['Ta. Chotila', 'Surendranagar.'], btnMap: 'View location on Google Maps' },
     family: {
       title: 'With Love From',
       cards: [

@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react'
-import { motion, useScroll, useTransform, useMotionTemplate, useMotionValueEvent } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { motion, useScroll, useTransform, useMotionTemplate } from 'framer-motion'
 import Countdown from './Countdown.jsx'
 import CouplePhoto from './CouplePhoto.jsx'
 import Skyline from './Skyline.jsx'
@@ -38,8 +38,6 @@ function addToCalendar(title) {
 /* the living sky: it moves from dawn to night as you scroll, with a sun that becomes a moon */
 function LivingSky() {
   const { scrollYProgress: p } = useScroll()
-  const [progressPercent, setProgressPercent] = useState(0)
-  useMotionValueEvent(p, 'change', (v) => setProgressPercent(Math.round(v * 100)))
   const S = [0, 0.28, 0.5, 0.78, 1]
   const top = useTransform(p, S, ['#ffcfae', '#ffe39a', '#bfe0f5', '#7b4a9e', '#12103a'])
   const mid = useTransform(p, S, ['#ffe3c8', '#fff0c4', '#e4f0f3', '#e8627a', '#1f1b55'])
@@ -53,7 +51,6 @@ function LivingSky() {
   const starsO = useTransform(p, [0.74, 0.92], [0, 1])
   const sil = useTransform(p, [0, 0.5, 0.75, 1], ['#e4b48e', '#d9b38c', '#3a1e3c', '#07061c'])
   const win = useTransform(p, [0, 0.5, 0.75, 1], [0.15, 0, 0.9, 1])
-  const progressY = useTransform(p, [0, 1], ['0%', '100%'])
   return (
     <>
       <div className="lsky" aria-hidden="true">
@@ -65,13 +62,6 @@ function LivingSky() {
         </motion.div>
         <Skyline className="lline" sil={sil} win={win} />
       </div>
-      <motion.aside className="day-progress" role="progressbar" aria-label="Sunrise to night progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progressPercent}>
-        <span className="day-progress-dawn" aria-hidden="true">☀</span>
-        <span className="day-progress-track">
-          <motion.span className="day-progress-marker" style={{ top: progressY }} aria-hidden="true">☀</motion.span>
-        </span>
-        <span className="day-progress-night" aria-hidden="true">☾</span>
-      </motion.aside>
     </>
   )
 }
@@ -157,9 +147,97 @@ function RsvpForm({ t }) {
 export default function Site() {
   const { t, lang } = useLang()
   const [copied, setCopied] = useState(false)
+  const galleryRef = useRef(null)
   const mapUrl = `${CFG.mapQuery}`
   const mapUrl1 = `${CFG.mapQuery1}`
   const extra = CFG.photos.slice(1)
+  useEffect(() => {
+    const gallery = galleryRef.current
+    if (!gallery || extra.length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    let interval
+    let restartTimeout
+    let isHovering = false
+    let isInteracting = false
+    let isFocused = false
+    const stop = () => {
+      window.clearInterval(interval)
+      window.clearTimeout(restartTimeout)
+    }
+    const start = () => {
+      stop()
+      if (!document.hidden && !isHovering && !isInteracting && !isFocused) interval = window.setInterval(advance, 4000)
+    }
+    const resume = () => {
+      stop()
+      restartTimeout = window.setTimeout(start, 5000)
+    }
+    const advance = () => {
+      const maxScroll = gallery.scrollWidth - gallery.clientWidth
+      if (maxScroll <= 1) return
+      if (gallery.scrollLeft >= maxScroll - 8) {
+        gallery.scrollTo({ left: 0, behavior: 'smooth' })
+        return
+      }
+      const card = gallery.querySelector('figure')
+      const gap = parseFloat(window.getComputedStyle(gallery).columnGap) || 0
+      const step = (card?.getBoundingClientRect().width || gallery.clientWidth) + gap
+      gallery.scrollBy({ left: Math.min(step, maxScroll - gallery.scrollLeft), behavior: 'smooth' })
+    }
+    const onPointerEnter = (event) => {
+      if (event.pointerType === 'mouse') {
+        isHovering = true
+        stop()
+      }
+    }
+    const onPointerLeave = (event) => {
+      if (event.pointerType === 'mouse') {
+        isHovering = false
+        start()
+      }
+    }
+    const onPointerDown = () => {
+      isInteracting = true
+      stop()
+    }
+    const onPointerEnd = () => {
+      isInteracting = false
+      resume()
+    }
+    const onFocusIn = () => {
+      isFocused = true
+      stop()
+    }
+    const onFocusOut = () => {
+      isFocused = false
+      start()
+    }
+    const onVisibilityChange = () => (document.hidden ? stop() : start())
+
+    gallery.addEventListener('pointerenter', onPointerEnter)
+    gallery.addEventListener('pointerleave', onPointerLeave)
+    gallery.addEventListener('pointerdown', onPointerDown)
+    gallery.addEventListener('pointerup', onPointerEnd)
+    gallery.addEventListener('pointercancel', onPointerEnd)
+    gallery.addEventListener('focusin', onFocusIn)
+    gallery.addEventListener('focusout', onFocusOut)
+    gallery.addEventListener('wheel', resume, { passive: true })
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    start()
+
+    return () => {
+      stop()
+      gallery.removeEventListener('pointerenter', onPointerEnter)
+      gallery.removeEventListener('pointerleave', onPointerLeave)
+      gallery.removeEventListener('pointerdown', onPointerDown)
+      gallery.removeEventListener('pointerup', onPointerEnd)
+      gallery.removeEventListener('pointercancel', onPointerEnd)
+      gallery.removeEventListener('focusin', onFocusIn)
+      gallery.removeEventListener('focusout', onFocusOut)
+      gallery.removeEventListener('wheel', resume)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+    }
+  }, [extra.length])
   const share = async () => {
     const data = { title: t.share.text, text: t.share.text, url: location.href }
     try { if (navigator.share) return await navigator.share(data); await navigator.clipboard.writeText(location.href); setCopied(true); setTimeout(() => setCopied(false), 2200) } catch {}
@@ -208,10 +286,17 @@ export default function Site() {
         {extra.length > 0 && (
           <section className="sec">
             <Head no="☀">{t.gallery.title}</Head>
-            <div className="windows">
+            <div className="windows" ref={galleryRef}>
               {extra.map((p, i) => (
-                <motion.figure key={p} variants={rv} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.3 }}>
-                  <img src={p} alt="" loading="lazy" onError={(e) => { e.currentTarget.src = FALLBACK }} />
+                <motion.figure
+                  key={p}
+                  variants={rv}
+                  initial="hidden"
+                  whileInView="show"
+                  whileHover={{ y: -8, rotate: i % 2 === 0 ? -1.5 : 1.5, scale: 1.02 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                >
+                  <img src={p} alt={t.gallery.cap[i % t.gallery.cap.length]} loading="lazy" decoding="async" onError={(e) => { e.currentTarget.src = FALLBACK }} />
                   <figcaption>{t.gallery.cap[i % t.gallery.cap.length]}</figcaption>
                 </motion.figure>
               ))}
@@ -231,7 +316,8 @@ export default function Site() {
           <div className="sheet venue">
             <Head no={t.ch[2]}>{t.venue.title}</Head>
             <Reveal><Compass /></Reveal>
-            <Reveal as="h3" className="vname">{t.venue.name}</Reveal>
+            <Reveal as="h2" className="vname">{t.venue.list}</Reveal>
+            <Reveal as="h4" className="vname">{t.venue.name}</Reveal>
             <Reveal className="vlines">{t.venue.lines.map((l) => <p key={l}>{l}</p>)}</Reveal>
             <Reveal><motion.a className="btn sun" href={mapUrl} target="_blank" rel="noopener noreferrer" whileTap={{ scale: 0.96 }}>📍 {t.venue.btnMap}</motion.a></Reveal>
           </div>
@@ -242,7 +328,8 @@ export default function Site() {
           <div className="sheet venue">
             <Head no={t.ch[2]}>{t.venue2.title}</Head>
             <Reveal><Compass /></Reveal>
-            <Reveal as="h3" className="vname">{t.venue2.name}</Reveal>
+            <Reveal as="h2" className="vname">{t.venue2.list}</Reveal>
+            <Reveal as="h4" className="vname">{t.venue2.name}</Reveal>
             <Reveal className="vlines">{t.venue2.lines.map((l) => <p key={l}>{l}</p>)}</Reveal>
             <Reveal><motion.a className="btn sun" href={mapUrl1} target="_blank" rel="noopener noreferrer" whileTap={{ scale: 0.96 }}>📍 {t.venue2.btnMap}</motion.a></Reveal>
           </div>
